@@ -44,11 +44,15 @@ export const connect = () => {
           method: "net_version",
         });
         console.log(networkId);
-        if (networkId == 137) {
+        if (networkId == 1641660040748) {
+          //if (networkId == 1641653488660) {
+          //if (networkId == 137) {
+          const lipTokenNetwordData = await LipToken.networks[networkId];
           const lipToken = new web3.eth.Contract(
             LipToken.abi,
-            "0x247700BBab4dC984547444eCaa95f4E3Ed5dEC74"
+            lipTokenNetwordData.address
           );
+          console.log(lipTokenNetwordData.address);
           dispatch(
             connectSuccess({
               account: accounts[0],
@@ -58,9 +62,11 @@ export const connect = () => {
           );
           // Add listeners start
           window.ethereum.on("accountsChanged", (accounts) => {
+            console.log('accountsChanged', accounts);
             dispatch(updateAccount(accounts[0]));
           });
           window.ethereum.on("chainChanged", () => {
+            console.log('chainChanged');
             window.location.reload();
           });
           // Add listeners end
@@ -68,6 +74,7 @@ export const connect = () => {
           dispatch(connectFailed("Change network to Polygon."));
         }
       } catch (err) {
+        console.error(err);
         dispatch(connectFailed("Something went wrong."));
       }
     } else {

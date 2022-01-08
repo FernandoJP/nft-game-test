@@ -13,8 +13,6 @@ function App() {
   const data = useSelector((state) => state.data);
   const [loading, setLoading] = useState(false);
 
-  console.log(data);
-
   const mintNFT = (_account, _name) => {
     setLoading(true);
     blockchain.lipToken.methods
@@ -58,6 +56,17 @@ function App() {
     }
   }, [blockchain.lipToken]);
 
+  const getMintedToken = (_account) => {
+    if (blockchain.lipToken) {
+      blockchain.lipToken.methods.getMintedToken().send({ from: _account })
+        .then((data) => {
+          console.log(data);
+          console.log(_account);
+        })
+        .catch(console.log)
+    }
+  }
+
   return (
     <s.Screen image={_color}>
       {blockchain.account === "" || blockchain.lipToken === null ? (
@@ -89,6 +98,15 @@ function App() {
             }}
           >
             CREATE NFT LIP
+          </button>
+          <button
+            disabled={loading ? 1 : 0}
+            onClick={(e) => {
+              e.preventDefault();
+              getMintedToken(blockchain.account);
+            }}
+          >
+            GET MINTED TOKEN
           </button>
           <s.SpacerMedium />
           <s.Container jc={"center"} fd={"row"} style={{ flexWrap: "wrap" }}>
